@@ -1,15 +1,10 @@
 #include "fileimport.h"
 
-int importMap(int argc, char* argv[]){
+int** importMap(const char* filepath){
 
-    /*Checks to see whether the correct number of command-line arguments is present.*/
-    if(argc < 2){
-        printf("Enter the filepath!\n");
-        return 1;
-    }
+    const char* fileName = filepath;
 
-    /*Defines a file pointer, and then defines the value of the file pointer to the value taken from the second command-line argument.*/
-    FILE * filePtr;
+    /*Defines a file pointer, and then defines the value of the file pointer */
     const char * fileName = argv[1];
     filePtr = fopen(fileName, "r");
 
@@ -48,8 +43,7 @@ int importMap(int argc, char* argv[]){
     }
     printf("Map Generation Completed.\n");
 
+    fclose(filePtr)
     /*Returns the address to the map matrix*/
     return mapMatrix;
 }
-
-
