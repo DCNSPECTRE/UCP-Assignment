@@ -3,14 +3,15 @@
 #        prerequisites, all the necessary variables, and clean rules to get full mark on makefile category.
 #	     (Depending on the assignment requirement, you might even have to write CONDITIONAL COMPILATION)
 
-demo: demoChangeColor.o color.o
-	gcc demoChangeColor.o color.o -o demo
+escape: fileimport.o color.o escape.o
+	gcc escape.o color.o escape.o -o escapeGame
 
-demoChangeColor.o: demoChangeColor.c color.h
-	gcc -Wall -ansi -pedantic demoChangeColor.c -c
+fileimport.o: fileimport.c fileimport.h
+	gcc -Wall -ansi -pedantic fileimport.c -c
 
 color.o: color.c color.h
 	gcc -Wall -ansi -pedantic color.c -c
 
 clean:
-	rm demo demoChangeColor.o color.o	
+	rm escape.o color.o fileimport.o escapeGame
+
