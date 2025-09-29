@@ -55,22 +55,34 @@ char ** createGameMap(const gameMapInfo * mapData){
                 displayMap[i][j] = ' ';
             }
             else if(mapTileValue == 1){
-                displayMap[i][j] = '0';
+                displayMap[i][j] = 'O';
             }
             else if(mapTileValue == 2){
+                setForeground("white")
+                setBackground("blue")
                 displayMap[i][j] = '~';
+                setForeground("reset")
+                setBackground("reset")             
             }
             else if(mapTileValue == 3){
                 displayMap[i][j] = 'X';
             }
             else if(mapTileValue == 4){
+                setForeground("white")
+                setBackground("red")
                 displayMap[i][j] = '@';
+                setForeground("reset")
+                setBackground("reset")
             }
             else if(mapTileValue == 5){
-                displayMap[i][j] = 'p';
+                displayMap[i][j] = 'P';
             }
             else if(mapTileValue == 6){
+                setForeground("black")
+                setBackground("green")
                 displayMap[i][j] = 'G';
+                setForeground("reset")
+                setBackground("reset")
             }
         }
     }
@@ -78,3 +90,35 @@ char ** createGameMap(const gameMapInfo * mapData){
     return displayMap;
 }
 
+/*NOTE TO SELF: ALWAYS DO THIS LAST OR I CANT FREE THE DISPLAY MAP*/
+/*NOTE TO SELF: ALWAYS DO THIS LAST OR I CANT FREE THE DISPLAY MAP*/
+/*NOTE TO SELF: ALWAYS DO THIS LAST OR I CANT FREE THE DISPLAY MAP*/
+void freeMapData(gameMapInfo* mapData){
+    if(mapData == NULL){
+        return NULL;
+    }
+
+    int i;
+
+    for(i = 0; i < mapData->rows, i++){
+        free(mapData->mapMatrix[i]);
+    }
+
+    free(mapData->mapMatrix);
+    free(mapData);
+
+}
+
+void freeDisplayMap(char** displayMap, gameMapInfo* mapData){
+    if(displayMap == NULL){
+        return NULL;
+    }
+
+    int i;
+
+    for(i = 0; i < mapData->rows; i++){
+        free(displayMap[i]);
+    }
+
+    free(displayMap);
+}
