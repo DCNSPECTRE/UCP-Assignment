@@ -1,15 +1,21 @@
-CC = gcc
-CFLAGS = -Wall -ansi -pedantic
-EXEC = escapeGame
+#Default target: builds the final executable
+all: escape
 
-$(EXEC): fileimport.o color.o escape.o
-	$(CC) escape.o color.o escape.o -o $(EXEC)
 
-fileimport.o: fileimport.c fileimport.h
-	$(CC) $(CFLAGS) fileimport.c -c
+escape: escape.o fileimport.o color.o
+	gcc -o escape escape.o fileimport.o color.o
+
+
+escape.o: escape.c escape.h fileimport.h
+	gcc -Wall -ansi -pedantic -c escape.c
+
+
+fileimport.o: fileimport.c fileimport.h color.h
+	gcc -Wall -ansi -pedantic -c fileimport.c
+
 
 color.o: color.c color.h
-	$(CC) $(CFLAGS) color.c -c
+	gcc -Wall -ansi -pedantic -c color.c
 
 clean:
-	rm escape.o color.o fileimport.o escapeGame
+	rm -f escape escape.o fileimport.o color.o

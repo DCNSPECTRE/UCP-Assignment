@@ -70,31 +70,19 @@ char ** createGameMap(const gameMapInfo * mapData){
                 displayMap[i][j] = 'O';
             }
             else if(mapTileValue == 2){
-                setForeground("white");
-                setBackground("blue");
-                displayMap[i][j] = '~';
-                setForeground("reset");
-                setBackground("reset");             
+                displayMap[i][j] = '~';            
             }
             else if(mapTileValue == 3){
                 displayMap[i][j] = 'X';
             }
             else if(mapTileValue == 4){
-                setForeground("white");
-                setBackground("red");
                 displayMap[i][j] = '@';
-                setForeground("reset");
-                setBackground("reset");
             }
             else if(mapTileValue == 5){
                 displayMap[i][j] = 'P';
             }
             else if(mapTileValue == 6){
-                setForeground("black");
-                setBackground("green");
                 displayMap[i][j] = 'G';
-                setForeground("reset");
-                setBackground("reset");
             }
         }
     }
