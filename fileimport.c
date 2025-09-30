@@ -1,21 +1,31 @@
 #include "fileimport.h"
 
 gameMapInfo* importMap(const char * mapPath){
-    int i = 0 , j = 0;
+    int i, j;
     gameMapInfo * gameMap = NULL;
-    FILE * mapPtr = fopen(mapPath, "r");
-
+    FILE * mapPtr; 
+    
+    
     if(mapPath == NULL){
         printf("Enter map path, or check directory\n");
         return NULL;
     }
-
+    
+    mapPtr = fopen(mapPath, "r");
+    
+    if(mapPtr == NULL){
+        printf("Error opening the map!\n");
+        return NULL;
+    }
+    
     gameMap = malloc(sizeof(gameMapInfo));
+
     if(gameMap == NULL){
         fclose(mapPtr);
         return NULL;
     }
-
+    
+    
     fscanf(mapPtr, "%d %d", &gameMap->rows, &gameMap->cols);
 
     gameMap->mapMatrix = malloc(gameMap->rows * sizeof(int*));
@@ -36,8 +46,9 @@ gameMapInfo* importMap(const char * mapPath){
 }
 
 char ** createGameMap(const gameMapInfo * mapData){
-    int i = 0, j = 0;
+    int i, j;
     char ** displayMap = NULL;
+    
     if (mapData == NULL){
         return NULL;
     }
@@ -95,11 +106,10 @@ char ** createGameMap(const gameMapInfo * mapData){
 /*NOTE TO SELF: ALWAYS DO THIS LAST OR I CANT FREE THE DISPLAY MAP*/
 /*NOTE TO SELF: ALWAYS DO THIS LAST OR I CANT FREE THE DISPLAY MAP*/
 void freeMapData(gameMapInfo* mapData){
-    int i = 0;
+    int i;
     if(mapData == NULL){
         return;
     }
-
 
     for(i = 0; i < mapData->rows; i++){
         free(mapData->mapMatrix[i]);
@@ -111,11 +121,10 @@ void freeMapData(gameMapInfo* mapData){
 }
 
 void freeDisplayMap(char** displayMap, gameMapInfo* mapData){
-    int i = 0;
+    int i;
     if(displayMap == NULL){
         return;
     }
-
 
     for(i = 0; i < mapData->rows; i++){
         free(displayMap[i]);
