@@ -1,17 +1,15 @@
-# NOTE : This makefile is a supplementary file for demonstration purposes, hence it only consists of simple rules.
-#        When you write the makefile for your assignment, please make sure it has complete rules,
-#        prerequisites, all the necessary variables, and clean rules to get full mark on makefile category.
-#	     (Depending on the assignment requirement, you might even have to write CONDITIONAL COMPILATION)
+CC = gcc
+CFLAGS = -Wall -ansi -pedantic
+EXEC = escapeGame
 
-escape: fileimport.o color.o escape.o
-	gcc escape.o color.o escape.o -o escapeGame
+$(EXEC): fileimport.o color.o escape.o
+	$(CC) escape.o color.o escape.o -o $(EXEC)
 
 fileimport.o: fileimport.c fileimport.h
-	gcc -Wall -ansi -pedantic fileimport.c -c
+	$(CC) $(CFLAGS) fileimport.c -c
 
 color.o: color.c color.h
-	gcc -Wall -ansi -pedantic color.c -c
+	$(CC) $(CFLAGS) color.c -c
 
 clean:
 	rm escape.o color.o fileimport.o escapeGame
-
