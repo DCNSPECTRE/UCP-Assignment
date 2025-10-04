@@ -5,8 +5,6 @@
 #include <strings.h>
 #include <stdlib.h>
 #include "fileimport.h"
-#include "color.h"
-#include "terminal.h"
 
 typedef struct {
     int row;

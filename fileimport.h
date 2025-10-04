@@ -16,5 +16,4 @@ gameMapInfo* importMap(const char * mapPath);
 char** createGameMap(const gameMapInfo * mapData);
 void freeMapData(gameMapInfo* mapData);
 void freeDisplayMap(char** displayMap, gameMapInfo* mapData);
-
 #endif
