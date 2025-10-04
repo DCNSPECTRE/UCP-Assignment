@@ -7,11 +7,10 @@ void handleInput(char input, gameState* game);
 void triggerTrap(gameState* game);
 void spreadWater(gameState* game);
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]){
     gameState game;
     char input = ' ';
-    int gameRunning = 1;
+    game.gameRunning = 1;
 
     if (argc != 2)
     {
@@ -33,56 +32,46 @@ int main(int argc, char *argv[])
     game.trapTrigger = 0;
 
     disableBuffer();
-    while(gameRunning)
+    while(game.gameRunning == 1)
     {
-        printf("\033[2J\033[H");
+        system("clear");
         printDisplayMap(game.displayMap, game.mapInfo);
         printf("\nPress 'w' to move UP\nPress 's' to move DOWN\nPress 'a' to move LEFT\nPress 'd' to move RIGHT\n");
         printf("Press 'u' to UNDO.\n");
         
         input = getchar();
 
-        if (input == 'q')
-        {
-            gameRunning = 0;
-        }
-        else
-        {
-            handleInput(input, &game);
-        }
+        handleInput(input, &game);
     }
     enableBuffer();
-    
-    printf("Game Over!\n");
+
     freeDisplayMap(game.displayMap, game.mapInfo);
     freeMapData(game.mapInfo);
     return 0;
 }
 
-void handleInput(char input, gameState* game)
-{
+void handleInput(char input, gameState* game){
     int nextRow = game->player.row;
     int nextCol = game->player.col;
 
-    if(input == "w"){
+    if(input == 'w'){
         nextRow --;
     }
-    else if(input == "s"){
+    else if(input == 's'){
         nextRow ++;
     }
-    else if(input == "a"){
+    else if(input == 'a'){
         nextCol --;
     }
-    else if(input == "d"){
+    else if(input == 'd'){
         nextCol ++;
     }
 
-    if(nextRow >= 0 && nextRow < game->mapInfo->rows && nextCol >= 0 && nextCol < game->mapInfo->cols)
-    {
+    if(nextRow >= 0 && nextRow < game->mapInfo->rows && nextCol >= 0 && nextCol < game->mapInfo->cols){
         char destinationTile = game->displayMap[nextRow][nextCol];
+        char landedTile = destinationTile;
 
-        if(destinationTile != 'O' && (destinationTile != 'X' || game->trapTrigger))
-        {
+        if(destinationTile != 'O' && (destinationTile != 'X' || game->trapTrigger == 0 || game->flooded == 0 || game->goalReached == 0)){
             if (destinationTile == '@')
             {
                 triggerTrap(game);
@@ -93,16 +82,28 @@ void handleInput(char input, gameState* game)
             game->player.col = nextCol;
             game->displayMap[game->player.row][game->player.col] = 'P';
 
-            if(game->trapTrigger)
+            if(game->trapTrigger == 1)
             {
                 spreadWater(game);
+            }
+
+            if(landedTile == '~')
+            {
+                game->flooded = 1;
+                printf("You have been flooded by water! Game Over!\n");
+                game->gameRunning = 0;
+            }
+            else if(landedTile == 'G')
+            {
+                game->goalReached = 1;
+                printf("Congratulations! You have reached the goal!\n");
+                game->gameRunning = 0;
             }
         }
     }
 }
 
-void triggerTrap(gameState* game)
-{
+void triggerTrap(gameState* game){
     int i, j;
     game->trapTrigger = 1;
 
@@ -118,8 +119,7 @@ void triggerTrap(gameState* game)
     }
 }
 
-void spreadWater(gameState* game)
-{
+void spreadWater(gameState* game){
     int i, j;
     char** tempMap = (char**)malloc(game->mapInfo->rows * sizeof(char*));
     for(i = 0; i < game->mapInfo->rows; i++)
@@ -160,8 +160,7 @@ void spreadWater(gameState* game)
     free(tempMap);
 }
 
-Player findPlayer(const gameMapInfo* mapInfo)
-{
+Player findPlayer(const gameMapInfo* mapInfo){
     int i, j;
     Player p;
     p.row = -1; 
@@ -182,17 +181,15 @@ Player findPlayer(const gameMapInfo* mapInfo)
     return p;
 }
 
-void printDisplayMap(char** map, const gameMapInfo* mapInfo)
-{
+void printDisplayMap(char** map, const gameMapInfo* mapInfo){
     int i, j;
     for (j = 0; j < mapInfo->cols + 2; j++) { printf("*"); }
     printf("\n");
 
-    for (i = 0; i < mapInfo->rows; i++)
-    {
+    for (i = 0; i < mapInfo->rows; i++){
         printf("*");
-        for(j = 0; j < mapInfo->cols; j++)
-        {
+
+        for(j = 0; j < mapInfo->cols; j++){
             char currentTile = map[i][j];
             if (currentTile == '~'){
                 setBackground("blue"); 

@@ -15,9 +15,12 @@ typedef struct {
 
 typedef struct{
     int trapTrigger;
+    int flooded;
+    int goalReached;
     Player player;
     gameMapInfo* mapInfo;
     char** displayMap;
+    int gameRunning;
 }gameState;
 
 

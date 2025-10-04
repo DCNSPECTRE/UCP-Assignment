@@ -1,7 +1,3 @@
-#Default target: builds the final executable
-all: escape
-
-
 escape: escape.o fileimport.o color.o terminal.o
 	gcc -o escape escape.o fileimport.o color.o terminal.o
 
