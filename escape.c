@@ -64,14 +64,19 @@ void handleInput(char input, gameState* game)
     int nextRow = game->player.row;
     int nextCol = game->player.col;
 
-    switch(input)
-    {
-        case 'w': nextRow--; break;
-        case 's': nextRow++; break;
-        case 'a': nextCol--; break;
-        case 'd': nextCol++; break;
+    if(input == "w"){
+        nextRow --;
     }
-    
+    else if(input == "s"){
+        nextRow ++;
+    }
+    else if(input == "a"){
+        nextCol --;
+    }
+    else if(input == "d"){
+        nextCol ++;
+    }
+
     if(nextRow >= 0 && nextRow < game->mapInfo->rows && nextCol >= 0 && nextCol < game->mapInfo->cols)
     {
         char destinationTile = game->displayMap[nextRow][nextCol];
@@ -132,14 +137,18 @@ void spreadWater(gameState* game)
         {
             if (tempMap[i][j] == '~')
             {
-                if (i > 0 && tempMap[i-1][j] != 'O' && tempMap[i-1][j] != '~')
+                if(i > 0 && tempMap[i-1][j] != 'O' && tempMap[i-1][j] != '~'){
                     game->displayMap[i-1][j] = '~';
-                if (i < game->mapInfo->rows - 1 && tempMap[i+1][j] != 'O' && tempMap[i+1][j] != '~')
+                }
+                if(i < game->mapInfo->rows - 1 && tempMap[i+1][j] != 'O' && tempMap[i+1][j] != '~'){
                     game->displayMap[i+1][j] = '~';
-                if (j > 0 && tempMap[i][j-1] != 'O' && tempMap[i][j-1] != '~')
+                }
+                if(j > 0 && tempMap[i][j-1] != 'O' && tempMap[i][j-1] != '~'){
                     game->displayMap[i][j-1] = '~';
-                if (j < game->mapInfo->cols - 1 && tempMap[i][j+1] != 'O' && tempMap[i][j+1] != '~')
+                }
+                if(j < game->mapInfo->cols - 1 && tempMap[i][j+1] != 'O' && tempMap[i][j+1] != '~'){
                     game->displayMap[i][j+1] = '~';
+                }
             }
         }
     }
