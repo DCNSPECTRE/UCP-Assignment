@@ -23,5 +23,10 @@ typedef struct{
     int gameRunning;
 }gameState;
 
+void printDisplayMap(char** map, const gameMapInfo* mapInfo);
+Player findPlayer(const gameMapInfo* mapInfo);
+void handleInput(char input, gameState* game);
+void triggerTrap(gameState* game);
+void spreadWater(gameState* game);
 
 #endif

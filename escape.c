@@ -1,11 +1,4 @@
 #include "escape.h"
-#include "terminal.h"
-
-void printDisplayMap(char** map, const gameMapInfo* mapInfo);
-Player findPlayer(const gameMapInfo* mapInfo);
-void handleInput(char input, gameState* game);
-void triggerTrap(gameState* game);
-void spreadWater(gameState* game);
 
 int main(int argc, char *argv[]){
     gameState game;
@@ -32,9 +25,10 @@ int main(int argc, char *argv[]){
     game.trapTrigger = 0;
 
     disableBuffer();
-    while(game.gameRunning == 1)
+    while(game.gameRunning == 1 && game.flooded == 0 && game.goalReached == 0)
     {
         system("clear");
+        printf("UCP 2025 Semester Two - Assignment - Escape the Flood!\n");
         printDisplayMap(game.displayMap, game.mapInfo);
         printf("\nPress 'w' to move UP\nPress 's' to move DOWN\nPress 'a' to move LEFT\nPress 'd' to move RIGHT\n");
         printf("Press 'u' to UNDO.\n");
@@ -43,6 +37,16 @@ int main(int argc, char *argv[]){
 
         handleInput(input, &game);
     }
+
+    system("clear");
+    printDisplayMap(game.displayMap, game.mapInfo);
+    if(game.goalReached == 1){
+        printf("Congratulations! You've reached the goal!\n");
+    }
+    else if(game.flooded == 1){
+        printf("Game Over! You've been flooded!\n");
+    }
+
     enableBuffer();
 
     freeDisplayMap(game.displayMap, game.mapInfo);
@@ -69,36 +73,34 @@ void handleInput(char input, gameState* game){
 
     if(nextRow >= 0 && nextRow < game->mapInfo->rows && nextCol >= 0 && nextCol < game->mapInfo->cols){
         char destinationTile = game->displayMap[nextRow][nextCol];
-        char landedTile = destinationTile;
 
         if(destinationTile != 'O' && (destinationTile != 'X' || game->trapTrigger == 0 || game->flooded == 0 || game->goalReached == 0)){
-            if (destinationTile == '@')
-            {
-                triggerTrap(game);
-            }
-
+            
             game->displayMap[game->player.row][game->player.col] = ' ';
             game->player.row = nextRow;
             game->player.col = nextCol;
             game->displayMap[game->player.row][game->player.col] = 'P';
-
+            
+            
+            
+            if (destinationTile == 'G')
+            {
+                game->goalReached = 1;
+                game->gameRunning = 0;
+            }
+            else if (destinationTile == '~'){
+                game->flooded = 1;
+                game->gameRunning = 0;
+            }
+            
+            if (destinationTile == '@'){
+                triggerTrap(game);
+            }
             if(game->trapTrigger == 1)
             {
                 spreadWater(game);
             }
-
-            if(landedTile == '~')
-            {
-                game->flooded = 1;
-                printf("You have been flooded by water! Game Over!\n");
-                game->gameRunning = 0;
-            }
-            else if(landedTile == 'G')
-            {
-                game->goalReached = 1;
-                printf("Congratulations! You have reached the goal!\n");
-                game->gameRunning = 0;
-            }
+            
         }
     }
 }
