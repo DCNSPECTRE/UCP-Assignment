@@ -1,17 +1,21 @@
-#include "terminal.h"
+#include<stdio.h>
+#include<termios.h>
+#include"terminal.h"
 
 void disableBuffer()
 {
     struct termios mode;
-    tcgetattr(STDIN_FILENO, &mode); /* Get current terminal settings */
-    mode.c_lflag &= ~(ICANON | ECHO); /* Turn off canonical mode and echo */
-    tcsetattr(STDIN_FILENO, TCSANOW, &mode); /* Apply new settings */
+
+    tcgetattr(0, &mode);
+    mode.c_lflag &= ~(ECHO | ICANON);
+    tcsetattr(0, TCSANOW, &mode);
 }
 
 void enableBuffer()
 {
     struct termios mode;
-    tcgetattr(STDIN_FILENO, &mode);
-    mode.c_lflag |= (ICANON | ECHO); /* Turn on canonical mode and echo */
-    tcsetattr(STDIN_FILENO, TCSANOW, &mode);
+
+    tcgetattr(0, &mode);
+    mode.c_lflag |= (ECHO | ICANON);
+    tcsetattr(0, TCSANOW, &mode);
 }
