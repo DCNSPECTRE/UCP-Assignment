@@ -37,8 +37,8 @@ int main(int argc, char *argv[])
     {
         printf("\033[2J\033[H");
         printDisplayMap(game.displayMap, game.mapInfo);
-        printf("\nControls: 'w' (up), 's' (down), 'a' (left), 'd' (right)\n");
-        printf("Press 'q' to quit.\n");
+        printf("\nPress 'w' to move UP\nPress 's' to move DOWN\nPress 'a' to move LEFT\nPress 'd' to move RIGHT\n");
+        printf("Press 'u' to UNDO.\n");
         
         input = getchar();
 
