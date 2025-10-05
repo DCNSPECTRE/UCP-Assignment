@@ -56,12 +56,13 @@ int main(int argc, char *argv[]){
     enableBuffer();
 
     freeDisplayMap(game.displayMap, game.mapInfo);
+    game.displayMap = NULL;
     freeMapData(game.mapInfo);
     freeUndo(undoHead, game.mapInfo);
     return 0;
 }
 
-char** CopyDisplayMap(char** src, int rows, int cols) {
+char** copyDisplayMap(char** src, int rows, int cols) {
     int i;
     char** dest = malloc(rows * sizeof(char*));
     for (i = 0; i < rows; i++) {
@@ -75,7 +76,7 @@ void undoMoveStore(undoNode** head, gameState* game){
     undoNode* newNode = malloc(sizeof(undoNode));
     gameState* snapshot = malloc(sizeof(gameState));
     memcpy(snapshot, game, sizeof(gameState));
-    snapshot->displayMap = CopyDisplayMap(game->displayMap, game->mapInfo->rows, game->mapInfo->cols);
+    snapshot->displayMap = copyDisplayMap(game->displayMap, game->mapInfo->rows, game->mapInfo->cols);
     newNode->data = snapshot;
     newNode->next = *head;
     *head = newNode;

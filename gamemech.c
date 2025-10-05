@@ -21,6 +21,8 @@ void handleInput(char input, gameState* game, undoNode** undoHead){
         if(prev != NULL){
             freeDisplayMap(game->displayMap, game->mapInfo);
             memcpy(game, prev, sizeof(gameState));
+            game->displayMap = copyDisplayMap(prev->displayMap, game->mapInfo->rows, game->mapInfo->cols);
+            freeDisplayMap(prev->displayMap, game->mapInfo);
             free(prev);
         }
         return;
