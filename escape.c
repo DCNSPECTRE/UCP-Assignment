@@ -55,9 +55,9 @@ int main(int argc, char *argv[]){
     }
 
 
+    freeList(&undoStack, freeGameState);
     freeDisplayMap(game.displayMap, game.mapInfo);
     freeMapData(game.mapInfo);
-    freeList(&undoStack, freeGameState);
     return 0;
 }
 
