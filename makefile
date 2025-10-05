@@ -1,20 +1,33 @@
-escape: escape.o fileimport.o color.o terminal.o
-	gcc -o escape escape.o fileimport.o color.o terminal.o
+COMPILER=gcc
+CFLAGS=-Wall -ansi -pedantic -c
+CLEANUP=rm -f escape escape.o fileimport.o color.o terminal.o gamemech.o
+ALL=escape.o fileimport.o color.o terminal.o gamemech.o
+ESCAPE=escape.c escape.h fileimport.h
+FILEIMPORT=fileimport.c fileimport.h color.h
+COLOR=color.c color.h
+TERMINAL=terminal.c terminal.h
+GAMEMECH=gamemech.c gamemech.h
 
+escape: $(ALL)
+	$(COMPILER) -o escape escape.o fileimport.o color.o terminal.o gamemech.o
 
-escape.o: escape.c escape.h fileimport.h
-	gcc -Wall -ansi -pedantic -c escape.c
+escape.o: $(ESCAPE)
+	$(COMPILER) $(CFLAGS) escape.c
 
+fileimport.o: $(FILEIMPORT)
+	$(COMPILER) $(CFLAGS) fileimport.c
 
-fileimport.o: fileimport.c fileimport.h color.h
-	gcc -Wall -ansi -pedantic -c fileimport.c
+color.o: $(COLOR)
+	$(COMPILER) $(CFLAGS) color.c
 
+terminal.o: $(TERMINAL)
+	$(COMPILER) $(CFLAGS) terminal.c
 
-color.o: color.c color.h
-	gcc -Wall -ansi -pedantic -c color.c
+gamemech.o: $(GAMEMECH)
+	$(COMPILER) $(CFLAGS) gamemech.c
 
-terminal.o: terminal.c terminal.h
-	gcc -Wall -ansi -pedantic -c terminal.c
+antonisnightmare: escape
+	valgrind --leak-check=full ./escape
 
 clean:
-	rm -f escape escape.o fileimport.o color.o terminal.o
+	$(CLEANUP)
