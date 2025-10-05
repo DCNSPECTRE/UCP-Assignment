@@ -41,7 +41,7 @@ int main(int argc, char *argv[]){
 
         input = getchar();
 
-        handleInput(input, &game, undoHead);
+        handleInput(input, &game, &undoHead);
     }
 
     system("clear");
@@ -60,26 +60,37 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
+char** deepCopyDisplayMap(char** src, int rows, int cols) {
+    int i;
+    char** dest = malloc(rows * sizeof(char*));
+    for (i = 0; i < rows; i++) {
+        dest[i] = malloc(cols * sizeof(char));
+        memcpy(dest[i], src[i], cols * sizeof(char));
+    }
+    return dest;
+}
+
 void undoMoveStore(undoNode** head, gameState* game){
     undoNode* newNode = malloc(sizeof(undoNode));
     gameState* snapshot = malloc(sizeof(gameState));
     memcpy(snapshot, game, sizeof(gameState));
+    snapshot->displayMap = deepCopyDisplayMap(game->displayMap, game->mapInfo->rows, game->mapInfo->cols);
     newNode->data = snapshot;
     newNode->next = *head;
     *head = newNode;
 }
-
 gameState* undoMoveDo(undoNode** head){
+    undoNode* temp; 
+    gameState* snapshot; 
     if (*head == NULL){
         return NULL;
     }
-    undoNode* temp = *head;
-    gameState* snapshot = temp->data;
+    temp = *head;
+    snapshot = temp->data;
     *head = temp->next;
     free(temp);
     return snapshot;
 }
-
 
 
 

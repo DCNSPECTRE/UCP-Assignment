@@ -8,6 +8,11 @@
 #include "color.h"
 #include "terminal.h"
 
+typedef struct undoNode{
+    void* data;
+    struct undoNode* next;
+}undoNode;
+
 typedef struct Player{
     int row;
     int col;
@@ -23,17 +28,14 @@ typedef struct gameState{
     int gameRunning;
 }gameState;
 
+
 void printDisplayMap(char** map, const gameMapInfo* mapInfo);
 Player findPlayer(const gameMapInfo* mapInfo);
-void handleInput(char input, gameState* game);
+void handleInput(char input, gameState* game, undoNode** undoHead);
 void triggerTrap(gameState* game);
 void spreadWater(gameState* game);
 gameState* undoMoveDo(undoNode** head);
 void undoMoveStore(undoNode** head, gameState* game);
 
-typedef struct undoNode{
-    void* data;
-    struct undoNode* next;
-}undoNode;
 
 #endif
