@@ -3,7 +3,12 @@
 int main(int argc, char *argv[]){
     gameState game;
     char input = ' ';
+    linkedListNode* undoStack = NULL;
     game.gameRunning = 1;
+
+    game.gameRunning = 1;
+    game.flooded = 0;
+    game.goalReached = 0;
 
     if (argc != 2)
     {
@@ -18,7 +23,8 @@ int main(int argc, char *argv[]){
 
     game.displayMap = createGameMap(game.mapInfo);
     if (game.displayMap == NULL){
-        freeMapData(game.mapInfo); return 1;
+        freeMapData(game.mapInfo); 
+        return 1;
     }
 
     game.player = findPlayer(game.mapInfo);
@@ -35,8 +41,9 @@ int main(int argc, char *argv[]){
         
         input = getchar();
 
-        handleInput(input, &game);
+        handleInput(input, &game, &undoStack);
     }
+    enableBuffer();
 
     system("clear");
     printDisplayMap(game.displayMap, game.mapInfo);
@@ -47,12 +54,29 @@ int main(int argc, char *argv[]){
         printf("Game Over! You've been flooded!\n");
     }
 
-    enableBuffer();
 
     freeDisplayMap(game.displayMap, game.mapInfo);
     freeMapData(game.mapInfo);
+    freeList(&undoStack, freeGameState);
     return 0;
 }
 
+char** copyDisplayMap(char** map, int rows, int cols){
+    int i;
+    char** newMap = (char**)malloc(rows * sizeof(char*));
+    for(i = 0; i < rows; i++){
+        newMap[i] = (char*)malloc(cols * sizeof(char));
+        memcpy(newMap[i], map[i], cols * sizeof(char));
+    }
+    return newMap;
+}
+
+void freeGameState(void* data){
+    gameState* state = (gameState*)data;
+    if (state != NULL){
+        freeDisplayMap(state->displayMap, state->mapInfo);
+        free(state);
+    }
+}
 
 

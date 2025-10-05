@@ -2,7 +2,7 @@
 #define ESCAPE_H
 
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <stdlib.h>
 #include "fileimport.h"
 #include "color.h"
@@ -26,7 +26,7 @@ typedef struct{
 
 void printDisplayMap(char** map, const gameMapInfo* mapInfo);
 Player findPlayer(const gameMapInfo* mapInfo);
-void handleInput(char input, gameState* game);
+void handleInput(char input, gameState* game, linkedListNode** undoStack);
 void triggerTrap(gameState* game);
 void spreadWater(gameState* game);
 void freeGameState(void* data);

@@ -1,12 +1,13 @@
 COMPILER=gcc
 CFLAGS=-Wall -ansi -pedantic -c
-CLEANUP=rm -f escape escape.o fileimport.o color.o terminal.o gamemech.o
-ALL=escape.o fileimport.o color.o terminal.o gamemech.o
+CLEANUP=rm -f escape escape.o fileimport.o color.o terminal.o gamemech.o linkedlist.o
+ALL=escape.o fileimport.o color.o terminal.o gamemech.o linkedlist.o
 ESCAPE=escape.c escape.h fileimport.h
 FILEIMPORT=fileimport.c fileimport.h color.h
 COLOR=color.c color.h
 TERMINAL=terminal.c terminal.h
 GAMEMECH=gamemech.c gamemech.h
+LLIST=linkedlist.c linkedlist.h
 
 escape: $(ALL)
 	$(COMPILER) -o escape escape.o fileimport.o color.o terminal.o gamemech.o linkedlist.o
@@ -23,14 +24,15 @@ color.o: $(COLOR)
 terminal.o: $(TERMINAL)
 	$(COMPILER) $(CFLAGS) terminal.c
 
+linkedlist.o: $(LLIST)
+	$(COMPILER) $(CFLAGS) linkedlist.c
+
 gamemech.o: $(GAMEMECH)
 	$(COMPILER) $(CFLAGS) gamemech.c
 
-linkedlist.o: linkedlist.c linkedlist.h
-	$(COMPILER) $(CFLAGS) linkedlist.c
 
 antonisnightmare: escape
-	valgrind --leak-check=full ./escape
+	valgrind --leak-check=full ./escape map.txt
 
 clean:
 	$(CLEANUP)
