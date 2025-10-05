@@ -7,6 +7,7 @@
 #include "fileimport.h"
 #include "color.h"
 #include "terminal.h"
+#include "linkedlist.h"
 
 typedef struct {
     int row;
@@ -28,5 +29,7 @@ Player findPlayer(const gameMapInfo* mapInfo);
 void handleInput(char input, gameState* game);
 void triggerTrap(gameState* game);
 void spreadWater(gameState* game);
+void freeGameState(void* data);
+char ** copyDisplayMap(char** src, int rows, int cols);
 
 #endif

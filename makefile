@@ -9,7 +9,7 @@ TERMINAL=terminal.c terminal.h
 GAMEMECH=gamemech.c gamemech.h
 
 escape: $(ALL)
-	$(COMPILER) -o escape escape.o fileimport.o color.o terminal.o gamemech.o
+	$(COMPILER) -o escape escape.o fileimport.o color.o terminal.o gamemech.o linkedlist.o
 
 escape.o: $(ESCAPE)
 	$(COMPILER) $(CFLAGS) escape.c
@@ -25,6 +25,9 @@ terminal.o: $(TERMINAL)
 
 gamemech.o: $(GAMEMECH)
 	$(COMPILER) $(CFLAGS) gamemech.c
+
+linkedlist.o: linkedlist.c linkedlist.h
+	$(COMPILER) $(CFLAGS) linkedlist.c
 
 antonisnightmare: escape
 	valgrind --leak-check=full ./escape

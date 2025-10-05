@@ -1,6 +1,6 @@
 #include "gamemech.h"
 
-void handleInput(char input, gameState* game){
+void handleInput(char input, gameState* game, linkedListNode** undoStack){
     int nextRow = game->player.row;
     int nextCol = game->player.col;
 
@@ -16,12 +16,30 @@ void handleInput(char input, gameState* game){
     else if(input == 'd'){
         nextCol ++;
     }
+    else if(input == 'u'){
+        gameState* previousState = (gameState*)removeFirst(undoStack);
+        if(previousState != NULL){
+            freeDisplayMap(game->displayMap, game->mapInfo);
+            memcpy(game, previousState, sizeof(gameState));
+            free(previousState);
+        }
+        return;
+    }
+    else{
+        return;
+    }
 
     if(nextRow >= 0 && nextRow < game->mapInfo->rows && nextCol >= 0 && nextCol < game->mapInfo->cols){
         char destinationTile = game->displayMap[nextRow][nextCol];
+        gameState* currentState;
 
         if(destinationTile != 'O' && (destinationTile != 'X' || game->trapTrigger == 0 || game->flooded == 0 || game->goalReached == 0)){
             
+            currentState = (gameState*)malloc(sizeof(gameState));
+            memcpy(currentState, game, sizeof(gameState));
+            currentState->displayMap = copyDisplayMap(game->displayMap, game->mapInfo->rows, game->mapInfo->cols);
+            insertFirst(undoStack, currentState);
+
             game->displayMap[game->player.row][game->player.col] = ' ';
             game->player.row = nextRow;
             game->player.col = nextCol;
