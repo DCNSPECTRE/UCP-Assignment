@@ -45,6 +45,10 @@ void handleInput(char input, gameState* game){
             if(game->trapTrigger == 1)
             {
                 spreadWater(game);
+                if (game->displayMap[game->player.row][game->player.col] == '~'){
+                    game->flooded = 1;
+                    game->gameRunning = 0;
+                }
             }
             
         }
