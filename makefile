@@ -8,9 +8,10 @@ COLOR=color.c color.h
 TERMINAL=terminal.c terminal.h
 GAMEMECH=gamemech.c gamemech.h
 LLIST=linkedlist.c linkedlist.h
+COMPLIEEVERYTHING= -o escape escape.o fileimport.o color.o terminal.o gamemech.o linkedlist.o
 
 escape: $(ALL)
-	$(COMPILER) -o escape escape.o fileimport.o color.o terminal.o gamemech.o linkedlist.o
+	$(COMPILER) $(COMPLIEEVERYTHING)
 
 escape.o: $(ESCAPE)
 	$(COMPILER) $(CFLAGS) escape.c
