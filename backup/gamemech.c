@@ -1,6 +1,6 @@
 #include "gamemech.h"
 
-void handleInput(char input, gameState* game){
+void handleInput(char input, gameState* game, undoNode** undoHead){
     int nextRow = game->player.row;
     int nextCol = game->player.col;
 
@@ -15,6 +15,17 @@ void handleInput(char input, gameState* game){
     }
     else if(input == 'd'){
         nextCol ++;
+    }
+    else if(input == 'u'){
+        gameState* prev = undoMoveDo(undoHead);
+        if(prev != NULL){
+            freeDisplayMap(game->displayMap, game->mapInfo);
+            memcpy(game, prev, sizeof(gameState));
+            game->displayMap = copyDisplayMap(prev->displayMap, game->mapInfo->rows, game->mapInfo->cols);
+            freeDisplayMap(prev->displayMap, game->mapInfo);
+            free(prev);
+        }
+        return;
     }
 
     if(nextRow >= 0 && nextRow < game->mapInfo->rows && nextCol >= 0 && nextCol < game->mapInfo->cols){
@@ -45,7 +56,11 @@ void handleInput(char input, gameState* game){
             if(game->trapTrigger == 1)
             {
                 spreadWater(game);
-            }
+                    if (game->displayMap[game->player.row][game->player.col] == '~') {
+                        game->flooded = 1;
+                        game->gameRunning = 0;
+                    }
+             }
             
         }
     }
@@ -111,8 +126,8 @@ void spreadWater(gameState* game){
 Player findPlayer(const gameMapInfo* mapInfo){
     int i, j;
     Player p;
-    p.row = -1; 
-    p.col = -1;
+    p.row = 0; 
+    p.col = 0;
 
     for(i = 0; i < mapInfo->rows; i++)
     {

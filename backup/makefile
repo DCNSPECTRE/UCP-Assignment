@@ -7,6 +7,7 @@ FILEIMPORT=fileimport.c fileimport.h color.h
 COLOR=color.c color.h
 TERMINAL=terminal.c terminal.h
 GAMEMECH=gamemech.c gamemech.h
+MEMORYCHECK=valgrind --leak-check=full -s ./escape map.txt
 
 escape: $(ALL)
 	$(COMPILER) -o escape escape.o fileimport.o color.o terminal.o gamemech.o
@@ -27,7 +28,7 @@ gamemech.o: $(GAMEMECH)
 	$(COMPILER) $(CFLAGS) gamemech.c
 
 antonisnightmare: escape
-	valgrind --leak-check=full ./escape
+	$(MEMORYCHECK)
 
 clean:
 	$(CLEANUP)

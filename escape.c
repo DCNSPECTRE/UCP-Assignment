@@ -3,8 +3,6 @@
 int main(int argc, char *argv[]){
     gameState game;
     char input = ' ';
-    undoNode* undoHead = NULL;
-
     game.gameRunning = 1;
 
     if (argc != 2)
@@ -35,13 +33,9 @@ int main(int argc, char *argv[]){
         printf("\nPress 'w' to move UP\nPress 's' to move DOWN\nPress 'a' to move LEFT\nPress 'd' to move RIGHT\n");
         printf("Press 'u' to UNDO.\n");
         
-        if(input != 'u'){
-            undoMoveStore(&undoHead, &game);
-        }
-
         input = getchar();
 
-        handleInput(input, &game, &undoHead);
+        handleInput(input, &game);
     }
 
     system("clear");
@@ -56,58 +50,9 @@ int main(int argc, char *argv[]){
     enableBuffer();
 
     freeDisplayMap(game.displayMap, game.mapInfo);
-    game.displayMap = NULL;
     freeMapData(game.mapInfo);
-    freeUndo(undoHead, game.mapInfo);
     return 0;
 }
 
-char** copyDisplayMap(char** src, int rows, int cols) {
-    int i;
-    char** dest = malloc(rows * sizeof(char*));
-    for (i = 0; i < rows; i++) {
-        dest[i] = malloc(cols * sizeof(char));
-        memcpy(dest[i], src[i], cols * sizeof(char));
-    }
-    return dest;
-}
-
-void undoMoveStore(undoNode** head, gameState* game){
-    undoNode* newNode = malloc(sizeof(undoNode));
-    gameState* snapshot = malloc(sizeof(gameState));
-    memcpy(snapshot, game, sizeof(gameState));
-    snapshot->displayMap = copyDisplayMap(game->displayMap, game->mapInfo->rows, game->mapInfo->cols);
-    newNode->data = snapshot;
-    newNode->next = *head;
-    *head = newNode;
-}
-
-gameState* undoMoveDo(undoNode** head){
-    undoNode* temp; 
-    gameState* snapshot; 
-    if (*head == NULL){
-        return NULL;
-    }
-    temp = *head;
-    snapshot = temp->data;
-    *head = temp->next;
-    free(temp);
-    return snapshot;
-}
-
-void freeUndo(undoNode* head, gameMapInfo* mapInfo) {
-    undoNode* temp;
-    gameState* snapshot;
-    while (head) {
-        temp = head;
-        head = head->next;
-        snapshot = (gameState*)temp->data;
-        if (snapshot != NULL) {
-            freeDisplayMap(snapshot->displayMap, mapInfo);
-            free(snapshot);
-        }
-        free(temp);
-    }
-}
 
 
