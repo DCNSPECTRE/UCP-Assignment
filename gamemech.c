@@ -1,6 +1,6 @@
 #include "gamemech.h"
 
-void handleInput(char input, gameState* game){
+void handleInput(char input, gameState* game, undoNode* undoHead){
     int nextRow = game->player.row;
     int nextCol = game->player.col;
 
@@ -15,6 +15,13 @@ void handleInput(char input, gameState* game){
     }
     else if(input == 'd'){
         nextCol ++;
+    }
+    else if(input == 'u'){
+        gameState* prev = undoMoveDo(&undoHead);
+        if(prev == NULL){
+            memcpy(game, prev, sizeof(gameState));
+            free(prev);
+        }
     }
 
     if(nextRow >= 0 && nextRow < game->mapInfo->rows && nextCol >= 0 && nextCol < game->mapInfo->cols){

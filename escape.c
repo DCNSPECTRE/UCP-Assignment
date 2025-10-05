@@ -3,6 +3,8 @@
 int main(int argc, char *argv[]){
     gameState game;
     char input = ' ';
+    undoNode* undoHead = NULL;
+
     game.gameRunning = 1;
 
     if (argc != 2)
@@ -33,9 +35,13 @@ int main(int argc, char *argv[]){
         printf("\nPress 'w' to move UP\nPress 's' to move DOWN\nPress 'a' to move LEFT\nPress 'd' to move RIGHT\n");
         printf("Press 'u' to UNDO.\n");
         
+        if(input != 'u'){
+            undoMoveStore(&undoHead, &game);
+        }
+
         input = getchar();
 
-        handleInput(input, &game);
+        handleInput(input, &game, undoHead);
     }
 
     system("clear");
@@ -53,6 +59,27 @@ int main(int argc, char *argv[]){
     freeMapData(game.mapInfo);
     return 0;
 }
+
+void undoMoveStore(undoNode** head, gameState* game){
+    undoNode* newNode = malloc(sizeof(undoNode));
+    gameState* snapshot = malloc(sizeof(gameState));
+    memcpy(snapshot, game, sizeof(gameState));
+    newNode->data = snapshot;
+    newNode->next = *head;
+    *head = newNode;
+}
+
+gameState* undoMoveDo(undoNode** head){
+    if (*head == NULL){
+        return NULL;
+    }
+    undoNode* temp = *head;
+    gameState* snapshot = temp->data;
+    *head = temp->next;
+    free(temp);
+    return snapshot;
+}
+
 
 
 
