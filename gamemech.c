@@ -33,7 +33,7 @@ void handleInput(char input, gameState* game, linkedListNode** undoStack){
         char destinationTile = game->displayMap[nextRow][nextCol];
         gameState* currentState;
 
-        if(destinationTile != 'O' && (destinationTile != 'X' || game->trapTrigger == 0 || game->flooded == 0 || game->goalReached == 0)){
+        if(destinationTile != 'O' && destinationTile != 'X' && (game->trapTrigger == 0 || game->flooded == 0 || game->goalReached == 0)){
             
             currentState = (gameState*)malloc(sizeof(gameState));
             memcpy(currentState, game, sizeof(gameState));
