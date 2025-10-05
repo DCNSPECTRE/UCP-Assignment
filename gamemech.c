@@ -19,6 +19,7 @@ void handleInput(char input, gameState* game, undoNode** undoHead){
     else if(input == 'u'){
         gameState* prev = undoMoveDo(undoHead);
         if(prev != NULL){
+            freeDisplayMap(game->displayMap, game->mapInfo);
             memcpy(game, prev, sizeof(gameState));
             free(prev);
         }
@@ -119,8 +120,8 @@ void spreadWater(gameState* game){
 Player findPlayer(const gameMapInfo* mapInfo){
     int i, j;
     Player p;
-    p.row = -1; 
-    p.col = -1;
+    p.row = 0; 
+    p.col = 0;
 
     for(i = 0; i < mapInfo->rows; i++)
     {

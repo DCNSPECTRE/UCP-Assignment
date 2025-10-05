@@ -57,10 +57,11 @@ int main(int argc, char *argv[]){
 
     freeDisplayMap(game.displayMap, game.mapInfo);
     freeMapData(game.mapInfo);
+    freeUndo(undoHead, game.mapInfo);
     return 0;
 }
 
-char** deepCopyDisplayMap(char** src, int rows, int cols) {
+char** CopyDisplayMap(char** src, int rows, int cols) {
     int i;
     char** dest = malloc(rows * sizeof(char*));
     for (i = 0; i < rows; i++) {
@@ -74,11 +75,12 @@ void undoMoveStore(undoNode** head, gameState* game){
     undoNode* newNode = malloc(sizeof(undoNode));
     gameState* snapshot = malloc(sizeof(gameState));
     memcpy(snapshot, game, sizeof(gameState));
-    snapshot->displayMap = deepCopyDisplayMap(game->displayMap, game->mapInfo->rows, game->mapInfo->cols);
+    snapshot->displayMap = CopyDisplayMap(game->displayMap, game->mapInfo->rows, game->mapInfo->cols);
     newNode->data = snapshot;
     newNode->next = *head;
     *head = newNode;
 }
+
 gameState* undoMoveDo(undoNode** head){
     undoNode* temp; 
     gameState* snapshot; 
@@ -92,5 +94,19 @@ gameState* undoMoveDo(undoNode** head){
     return snapshot;
 }
 
+void freeUndo(undoNode* head, gameMapInfo* mapInfo) {
+    undoNode* temp;
+    gameState* snapshot;
+    while (head) {
+        temp = head;
+        head = head->next;
+        snapshot = (gameState*)temp->data;
+        if (snapshot != NULL) {
+            freeDisplayMap(snapshot->displayMap, mapInfo);
+            free(snapshot);
+        }
+        free(temp);
+    }
+}
 
 

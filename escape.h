@@ -36,6 +36,7 @@ void triggerTrap(gameState* game);
 void spreadWater(gameState* game);
 gameState* undoMoveDo(undoNode** head);
 void undoMoveStore(undoNode** head, gameState* game);
+void freeUndo(undoNode* head, gameMapInfo* mapInfo);
 
 
 #endif
