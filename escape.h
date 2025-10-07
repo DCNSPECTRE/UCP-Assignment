@@ -9,11 +9,13 @@
 #include "terminal.h"
 #include "linkedlist.h"
 
+/* This is the struct for the player position */
 typedef struct {
     int row;
     int col;
 }Player;
 
+/* This is the struct that stores the game state info such as the game map and the info, the game states for the traps, flooding, goals, game running etc.*/
 typedef struct{
     int trapTrigger;
     int flooded;
@@ -24,6 +26,7 @@ typedef struct{
     int gameRunning;
 }gameState;
 
+/* all of the function prototypes*/
 void printDisplayMap(char** map, const gameMapInfo* mapInfo);
 Player findPlayer(const gameMapInfo* mapInfo);
 void handleInput(char input, gameState* game, linkedListNode** undoStack);

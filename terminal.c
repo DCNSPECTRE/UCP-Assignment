@@ -1,5 +1,5 @@
 #include"terminal.h"
-
+/* Provided code that allows for buffer disable and enable*/
 void disableBuffer()
 {
     struct termios mode;

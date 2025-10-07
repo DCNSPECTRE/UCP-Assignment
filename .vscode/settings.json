@@ -3,6 +3,7 @@
         "strings.h": "c",
         "stdlib.h": "c",
         "color.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "stdio.h": "c"
     }
 }

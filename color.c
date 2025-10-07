@@ -1,5 +1,7 @@
 #include"color.h"
 
+/* Pre-provided functions that allow us to change the terminal output text and background colors. */
+
 void setForeground(char * color)
 {
     if(strcmp(color, "black") == 0)
