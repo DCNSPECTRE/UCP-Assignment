@@ -1,5 +1,3 @@
-#include<stdio.h>
-#include<termios.h>
 #include"terminal.h"
 
 void disableBuffer()
