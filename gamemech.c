@@ -1,9 +1,12 @@
 #include "gamemech.h"
+/* this file contains the main game mechanics functions */
 
+/* this function handles the player inputs and updates the game state accordingly */
+/* it takes in the input from the main game loop, the pointer to the current game state which is the struct, and a pointer to the undo stack which is my linked list*/
 void handleInput(char input, gameState* game, linkedListNode** undoStack){
-    int nextRow = game->player.row;
-    int nextCol = game->player.col;
-
+    int nextRow = game->player.row; /* next row position of the player */
+    int nextCol = game->player.col; /* next column osition of the player */
+    /* the following set of conditions determines which direction the player moves in relative to the postion in the array*/
     if(input == 'w'){
         nextRow --;
     }
@@ -16,12 +19,12 @@ void handleInput(char input, gameState* game, linkedListNode** undoStack){
     else if(input == 'd'){
         nextCol ++;
     }
-    else if(input == 'u'){
-        gameState* previousState = (gameState*)removeFirst(undoStack);
-        if(previousState != NULL){
-            freeDisplayMap(game->displayMap, game->mapInfo);
-            memcpy(game, previousState, sizeof(gameState));
-            free(previousState);
+    else if(input == 'u'){ /* tihs condition performs the actual undo function*/
+        gameState* previousState = (gameState*)removeFirst(undoStack); /* it defines the previous state to be the next item from head in the linked list which is hte current state.*/
+        if(previousState != NULL){ /* it checks if the previous state is not null*/
+            freeDisplayMap(game->displayMap, game->mapInfo); /* it frees the current display map to avoid memory leaks or dangling pointers*/
+            memcpy(game, previousState, sizeof(gameState)); /* it then copies the previous state into the current game state*/
+            free(previousState); /* it then frees the previous state to avoid memory leaks*/
         }
         return;
     }
@@ -29,34 +32,39 @@ void handleInput(char input, gameState* game, linkedListNode** undoStack){
         return;
     }
 
-    if(nextRow >= 0 && nextRow < game->mapInfo->rows && nextCol >= 0 && nextCol < game->mapInfo->cols){
-        char destinationTile = game->displayMap[nextRow][nextCol];
-        gameState* currentState;
+    /* this is basicallly my collision management algorithm*/
+    /* it checks if the next position is within the bounds of the map and if the destination tile is not an obstacle or water tile*/
+    if(nextRow >= 0 && nextRow < game->mapInfo->rows && nextCol >= 0 && nextCol < game->mapInfo->cols){ /* this checks if hte player is within the map bounds*/
+        char destinationTile = game->displayMap[nextRow][nextCol]; /* this gets the character at the next position*/
+        gameState* currentState; /* this defines a pointer to the current state of the game*/
 
-        if(destinationTile != 'O' && destinationTile != 'X' && (game->trapTrigger == 0 || game->flooded == 0 || game->goalReached == 0)){
-            
+        if(destinationTile != 'O' && destinationTile != 'X' && (game->trapTrigger == 0 || game->flooded == 0 || game->goalReached == 0)){ /* this checks if the destination tile is not an obstacle or water tile*/
+            /* before moving the player, save the current state to the undo stack */
             currentState = (gameState*)malloc(sizeof(gameState));
             memcpy(currentState, game, sizeof(gameState));
             currentState->displayMap = copyDisplayMap(game->displayMap, game->mapInfo->rows, game->mapInfo->cols);
             insertFirst(undoStack, currentState);
 
+            /* update the player's position on the display map by setting the current position to a space and the new position to 'P' */
             game->displayMap[game->player.row][game->player.col] = ' ';
             game->player.row = nextRow;
             game->player.col = nextCol;
             game->displayMap[game->player.row][game->player.col] = 'P';
             
             
-            
+            /* check for special tiles and update game state accordingly */
             if (destinationTile == 'G')
             {
                 game->goalReached = 1;
                 game->gameRunning = 0;
             }
+            /* if the player steps on water, the game ends with a flood */
             else if (destinationTile == '~'){
                 game->flooded = 1;
                 game->gameRunning = 0;
             }
-            
+            /* if the player steps on a trap it triggers the trap which removes all traps and obstacles from the map and starts the water spread */
+            else
             if (destinationTile == '@'){
                 triggerTrap(game);
             }
@@ -73,6 +81,8 @@ void handleInput(char input, gameState* game, linkedListNode** undoStack){
     }
 }
 
+/* this is a simple function which basically opens the trapgates and replaces them with blank spaces and also removes the trapdoor itself from the map.*/
+/* it does it by scanning the entire map (array) using two forloops.*/
 void triggerTrap(gameState* game){
     int i, j;
     game->trapTrigger = 1;
@@ -89,10 +99,11 @@ void triggerTrap(gameState* game){
     }
 }
 
+/* this functions handles the spread of water by using the brute for method as Antoni suggested.*/
 void spreadWater(gameState* game){
     int i, j;
-    char** tempMap = (char**)malloc(game->mapInfo->rows * sizeof(char*));
-    for(i = 0; i < game->mapInfo->rows; i++)
+    char** tempMap = (char**)malloc(game->mapInfo->rows * sizeof(char*)); /* this creates a temporary map to store the current state of the display map*/
+    for(i = 0; i < game->mapInfo->rows; i++) /* this loop deep copies the current state of the display map to the temporary map*/
     {
         tempMap[i] = (char*)malloc(game->mapInfo->cols * sizeof(char));
         for(j = 0; j < game->mapInfo->cols; j++)
@@ -100,7 +111,7 @@ void spreadWater(gameState* game){
             tempMap[i][j] = game->displayMap[i][j];
         }
     }
-
+    /* this set of nested loops scans the entire map and checks for water tiles and spreads the water to adjacent tiles if they are not obstacles or already water tiles*/
     for (i = 0; i < game->mapInfo->rows; i++)
     {
         for (j = 0; j < game->mapInfo->cols; j++)
@@ -122,7 +133,7 @@ void spreadWater(gameState* game){
             }
         }
     }
-    
+    /* this frees the temporary map to avoid memory leaks*/
     for(i = 0; i < game->mapInfo->rows; i++)
     {
         free(tempMap[i]);
@@ -130,6 +141,7 @@ void spreadWater(gameState* game){
     free(tempMap);
 }
 
+/* this function finds the player in the map by scanning the entire map using two for loops and checking for the player tile which is 5 in the map matrix*/
 Player findPlayer(const gameMapInfo* mapInfo){
     int i, j;
     Player p;
@@ -151,12 +163,14 @@ Player findPlayer(const gameMapInfo* mapInfo){
     return p;
 }
 
+/* this function prints the display map to the console with a border of asterisks and also adds color to certain tiles as per the provided sample output in the assignment brief*/
+/* if uses the provided colour file to set the colours.*/
 void printDisplayMap(char** map, const gameMapInfo* mapInfo){
     int i, j;
     for (j = 0; j < mapInfo->cols + 2; j++) { printf("*"); }
     printf("\n");
 
-    for (i = 0; i < mapInfo->rows; i++){
+    for (i = 0; i < mapInfo->rows; i++){ /* this prints each row of the map with asterisks on the sides*/
         printf("*");
 
         for(j = 0; j < mapInfo->cols; j++){
@@ -183,7 +197,7 @@ void printDisplayMap(char** map, const gameMapInfo* mapInfo){
         printf("*\n");
     }
 
-    for (j = 0; j < mapInfo->cols + 2; j++){
+    for (j = 0; j < mapInfo->cols + 2; j++){ /* this prints horizontal border of asterisks*/
         printf("*");
     }
     printf("\n");
