@@ -112,6 +112,7 @@ void spreadWater(gameState* game){
         }
     }
     /* this set of nested loops scans the entire map and checks for water tiles and spreads the water to adjacent tiles if they are not obstacles or already water tiles*/
+    /* it does it by checking adjancent matrix cells on the map relative to each water tile to determine whether it can spread or not and then spreds respectively.*/
     for (i = 0; i < game->mapInfo->rows; i++)
     {
         for (j = 0; j < game->mapInfo->cols; j++)
@@ -145,7 +146,7 @@ void spreadWater(gameState* game){
 Player findPlayer(const gameMapInfo* mapInfo){
     int i, j;
     Player p;
-    p.row = -1; 
+    p.row = -1; /* I decided to set the initial values of the player to -1,-1 to avoid any issue in the event that 0,0 on another map is a trap or something else*/
     p.col = -1;
 
     for(i = 0; i < mapInfo->rows; i++)
