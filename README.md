@@ -11,4 +11,4 @@ In summary, the program will:
    5. Extract information from a text file to initiliase the game.
    6. Utilise linkedlist data structures to keep track of the games progress allowing the player to undo steps.
 
-# This Repository is PRIVATE
+This code was written for a university assignment at Curtin University. It is shared for educational and portfolio purposes only. Please do not copy or submit any part of this work for academic credit, as that may violate academic integrity policies.If you intend on doing so, you agree to bear all legal, and academic consequences all of which are of your own doing, and I (Annas Atif) shall bear no legal or academic consequence.
